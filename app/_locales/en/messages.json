@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "sack the slack",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Delete old files from slack easily",
+    "description": "The description of the application"
+  }
+}
