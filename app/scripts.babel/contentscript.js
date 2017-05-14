@@ -35,13 +35,20 @@
       jq('#delete_file').click();
       // jq("button:contains('Yes, delete this file')").click()
       if (localStorage.getItem('lastNFilesDeleting') == "1") {
-        localStorage.setItem('numberOfFilesToDelete', parseInt(localStorage.getItem('numberOfFilesToDelete')) - 1);
+        var remainingFiles = parseInt(localStorage.getItem('numberOfFilesToDelete')) - 1
+        localStorage.setItem('numberOfFilesToDelete', remainingFiles);
+        if(remainingFiles == 0) {
+          localStorage.setItem('deletingInProgress', 0);
+        }
       }else{
         if(list.length > 0) {
           list.splice(list.indexOf(window.location.href), 1);
           localStorage.setItem('fileDeleteList', JSON.stringify(list));
+          if (list.length == 0) {
+            localStorage.setItem('deletingInProgress', 0);   
+          }
         }
-      }  
+      } 
       window.open(allFilePatternString ,'_self');    
     }, 2000);
   }
@@ -70,7 +77,29 @@
     }
   }
 
+  var addPluginBlocks = function() {
+    jq('.tab_set').append('<button id="addToDeleteList">Add to delete list</button>');
+    jq('.tab_set').append('<span class="deleteLastSpan"><input type="text" id="deleteLast" placeholder="Delete last n files"/></span>');
+    jq('.tab_set').append('<button id="deleteFiles">Delete</button>');
+    jq('.tab_set').append('<span style="color:red" id="deleteIndicator">Delete in Progress </span>');
+
+    observeElement(".file_list_item", function(list) {
+      list.each(function() {
+        var file_link = jq(this).find('.title a').attr('href');
+        var html = '<span> <input type="checkbox" class="sts-select" data-link="'+file_link+'"/></span>';
+        jq(this).before(html);
+      })
+    });
+  }
+
   var addBindings = function() {
+
+    if(localStorage.getItem('deletingInProgress') == "1") {
+      jq("#deleteIndicator").show();
+    }else{
+      jq("#deleteIndicator").hide();
+    }
+
     jq("#addToDeleteList").click(function() {
       jq(".sts-select:checked").each(function(){
         console.log(jq(this).data)
@@ -88,20 +117,6 @@
       }
       setLocalStorage('deletingInProgress', 1);
       deleteFiles();
-    });
-  }
-
-  var addPluginBlocks = function() {
-    jq('.tab_set').append('<button id="addToDeleteList">Add to delete list</button>');
-    jq('.tab_set').append('<span class="deleteLastSpan"><input type="text" id="deleteLast" placeholder="Delete last n files"/></span>');
-    jq('.tab_set').append('<button id="deleteFiles">Delete</button>');
-
-    observeElement(".file_list_item", function(list) {
-      list.each(function() {
-        var file_link = jq(this).find('.title a').attr('href');
-        var html = '<span> <input type="checkbox" class="sts-select" data-link="'+file_link+'"/></span>';
-        jq(this).before(html);
-      })
     });
   }
 
