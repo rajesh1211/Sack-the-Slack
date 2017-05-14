@@ -1,0 +1,35 @@
+.sts-action-area {
+  text-align: center;
+}
+
+#deleteFiles {
+  background: #eb4d5c;
+  padding: 15px;
+  width: 150px;
+}
+
+#deleteLast {
+  width: 50%;
+  padding: 5px;
+  font-size: 16px;
+}
+
+.sts-select {
+  position: absolute;
+  left: -30px;
+  top: 25px;
+  cursor: pointer;
+}
+
+.sts-select-span{
+  padding: 5px;
+}
+
+.delete-indicator{
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+  text-align: center;
+  position: absolute;
+  left: 50%;
+}

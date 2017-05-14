@@ -42,6 +42,7 @@
         "scripts.babel/jquery-3.2.1.min.js",
         "scripts.babel/contentscript.js"
       ],
+      "css": ["styles/content.css"],
       "run_at": "document_end",
       "all_frames": false
     }
