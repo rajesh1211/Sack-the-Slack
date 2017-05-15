@@ -119,7 +119,7 @@ gulp.task('wiredep', () => {
 gulp.task('package', function () {
   var manifest = require('./dist/manifest.json');
   return gulp.src('dist/**')
-      .pipe($.zip('sack the slack-' + manifest.version + '.zip'))
+      .pipe($.zip('Sack the Slack-' + manifest.version + '.zip'))
       .pipe(gulp.dest('package'));
 });
 

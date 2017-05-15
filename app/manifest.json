@@ -1,6 +1,6 @@
 {
   "name": "__MSG_appName__",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
@@ -20,10 +20,6 @@
     "debugger",
     "storage"
   ],
-  // "options_ui": {
-  //   "page": "options.html",
-  //   "chrome_style": true
-  // },
   "content_scripts": [
     {
       "matches": [
@@ -40,11 +36,7 @@
     }
   ],
   "page_action": {
-    // "default_icon": {
-    //   "19": "images/icon-19.png",
-    //   "38": "images/icon-38.png"
-    // },
-    "default_title": "sack the slack",
+    "default_title": "Sack the Slack",
     "default_popup": "popup.html",
     "icons": {
       "16": "images/sts-38.png",
