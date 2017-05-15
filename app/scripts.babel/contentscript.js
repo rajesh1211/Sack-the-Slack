@@ -37,10 +37,10 @@
 
   var deleteIndividualFile = function() {
     setTimeout(function() {
-      // $('.action_cog').click();
+      $('.action_cog').click();
       document.getElementsByClassName('ts_icon_cog')[0].click();
       $('#delete_file').click();
-      // $("button:contains('Yes, delete this file')").click()
+      $("button:contains('Yes, delete this file')").click()
       if (localStorage.getItem('lastNFilesDeleting') == "1") {
         var remainingFiles = parseInt(localStorage.getItem('numberOfFilesToDelete')) - 1
         localStorage.setItem('numberOfFilesToDelete', remainingFiles);
@@ -57,7 +57,7 @@
         }
       } 
       window.open(allFilePatternString ,'_self');    
-    }, 2000);
+    }, 3000);
   }
 
   var init = function() {
@@ -83,41 +83,114 @@
     $("#page_contents").prepend(deletIndicatorHtml);
     var html = `
       <div class='sts-action-area'>
-        <div>
-          <button class="btn btn-blue" id="addToDeleteList">Add to delete list</button> 
-          No. of files in the bucket to delete: <span id="filesInBucket">5</span>
-        <div>
-        <div>Or</div>
-        <div>   
-          <input type="number" id="deleteLast" placeholder="Delete last n files"/>
+        <div class="sts-row">
+          <p class="sts-title">Sack the Slack </p>
         </div>
-        <div>
-          <button class="btn" id="deleteFiles">Delete</button>
+        <div class="sts-action-btn-area">
+          <div class="sts-row">
+            <div class="sts-col">
+              <div class="selected-files">
+                <p>No. of files in the bucket to delete: <span id="filesInBucket">5</span></p>
+              </div>  
+            </div>
+            <div class="sts-col">  
+              <button class="btn" id="deleteSelectedFiles">Delete Selected Files</button>
+            </div>  
+          </div>
+          <div class="sts-row"><a id="btnResetBucket" href="javascript:void(0)">Reset Bucket</a></div>
+          <div class="sts-row"><p>Or</p></div>
+          <div class="sts-row">
+            <div class="sts-col">
+              <input type="number" id="deleteLast" placeholder="Delete last n files"/>
+            </div>
+            <div class="sts-col">  
+              <button class="btn" id="deleteFiles">Delete</button>
+            </div>  
+          </div>  
         </div>  
       </div>
     `
-
-    $('.pagination').after(html)
+    if($(".pagination").val() == "") {
+      $('.pagination').after(html)  
+    }else{
+      $('#files_list').after(html)  
+    }
+    
     $('#filesInBucket').html(list.length);
 
-    observeElement(".file_list_item", function(list) {
-      list.each(function() {
+    observeElement(".file_list_item", function(listOfItems) {
+      $("#files_div").prepend('<label class="select-all-label"><input type="checkbox" id="btnSelectAllFilesToDelete">   Select All </input> </label>');
+      listOfItems.each(function(index) {
         var file_link = $(this).find('.title a').attr('href');
-        var html = '<span class="sts-select-span"> <input type="checkbox" class="sts-select" data-link="'+file_link+'"/></span>';
+        var html = '<span class="sts-select-span" id="sts-select-span-'+index+'"> <input type="checkbox" id="sts-select-'+index+'" class="sts-select" data-link="'+file_link+'"/></span>';
         $(this).prepend(html);
-        $(".sts-select-span").click(function(e) {
-            e.stopPropagation();
-        });
+      });
 
-        $(".sts-select").click(function(e) {
-            e.stopPropagation();
-        });
-      })
+      $(".sts-select-span").click(function(e) {
+          e.stopPropagation();
+      });
+
+      $(".sts-select").click(function(e) {
+          e.stopPropagation();
+      });
+
+      $(".sts-select").click(function() {
+        var ischecked= $(this).is(':checked');
+        if(!ischecked){
+          deleteItemFromList($(this));  
+        }else{
+          addItemsToList($(this));
+        }
+      }); 
+
+      $("#btnSelectAllFilesToDelete").click(function(){
+        var ischecked= $(this).is(':checked');
+          if(!ischecked){
+            deselectAllCheckboxes();
+          }else{
+            selectAllCheckboxes();
+          }
+      });
+
+      $("#btnResetBucket").click(function() {
+        list = [];
+        updateListinLocalStorage();
+        deselectAllCheckboxes();
+      });
     });
 
     $(".file_list_item").click(function(e) {
       e.stopPropagation();
     });
+  }
+
+  var selectAllCheckboxes = function() {
+    $(".sts-select").each(function(){
+      addItemsToList($(this));
+    });
+  }
+
+  var deselectAllCheckboxes = function() {
+    $(".sts-select").each(function(){
+      deleteItemFromList($(this));  
+    });
+  }
+
+  var deleteItemFromList = function(obj) {
+    list.splice(list.indexOf(obj.data('link')), 1);
+    updateListinLocalStorage();
+    obj.prop("checked", false);
+  }
+
+  var addItemsToList = function(obj) {
+    list.push(obj.data('link'));
+    updateListinLocalStorage();    
+    obj.prop("checked", true);
+  }
+
+  var updateListinLocalStorage = function() {
+    localStorage.setItem('fileDeleteList', JSON.stringify(list));
+    $('#filesInBucket').html(list.length);
   }
 
   var addBindings = function() {
@@ -126,26 +199,36 @@
     }else{
       $("#deleteIndicator").hide();
     }
-    
-    $("#addToDeleteList").click(function() {
-      $(".sts-select:checked").each(function(){
-        console.log($(this).data)
-        list.push($(this).data('link'));
-      })
-      localStorage.setItem('fileDeleteList', JSON.stringify(list));
-      $('#filesInBucket').html(list.length);
-    });
 
     $("#deleteFiles").click(function() {
       if($("#deleteLast").val() != "") {
-        setLocalStorage('numberOfFilesToDelete', parseInt($("#deleteLast").val()));
-        setLocalStorage('lastNFilesDeleting', 1);
+        if(confirm("Are you sure you want to delete files")) {
+          setLocalStorage('numberOfFilesToDelete', parseInt($("#deleteLast").val()));
+          setLocalStorage('lastNFilesDeleting', 1);
+          list = [];
+          localStorage.setItem('fileDeleteList', JSON.stringify(list));
+          startDeleting();      
+        }  
       }else{
-        setLocalStorage('lastNFilesDeleting', 0);
+        alert("Please enter how many older files you want to delete");
       }
-      setLocalStorage('deletingInProgress', 1);
-      deleteFiles();
     });
+
+    $("#deleteSelectedFiles").click(function() {
+      if(list.length != 0) {
+        if(confirm("Are you sure you want to delete files in the bucket")) {
+          setLocalStorage('lastNFilesDeleting', 0);
+          startDeleting();      
+        }  
+      }else{
+        alert("Please add some files to delet bucket");
+      }  
+    });
+  }
+
+  var startDeleting = function() {
+    setLocalStorage('deletingInProgress', 1);
+    deleteFiles();
   }
 
   var deleteFiles = function() {
@@ -199,13 +282,12 @@
 
   $(document).ready(function() {
     BASE_URL = window.location.origin;
-    if (window.location.href.indexOf(BASE_URL+'/files') != -1) {
+    if (window.location.href.indexOf(BASE_URL+'/files/'+localStorage.getItem('username')) != -1) {
       init();
       addPluginBlocks();
       addBindings();
       deleteFiles();
     }
   });
-
-
+  
 })();
