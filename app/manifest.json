@@ -47,12 +47,17 @@
       "all_frames": false
     }
   ],
-  "browser_action": {
-    "default_icon": {
-      "19": "images/icon-19.png",
-      "38": "images/icon-38.png"
-    },
+  "page_action": {
+    // "default_icon": {
+    //   "19": "images/icon-19.png",
+    //   "38": "images/icon-38.png"
+    // },
     "default_title": "sack the slack",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "icons": {
+      "16": "images/icon-16.png",
+      "128": "images/icon-128.png"
+    }
   }
+  
 }

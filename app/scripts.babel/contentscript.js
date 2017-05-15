@@ -15,14 +15,21 @@
 
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      if(request.action == 'deleteFiles') {
-        console.log('files to be deleted are ' + request.numberOfFiles);
-        setLocalStorage('numberOfFilesToDelete', parseInt(request.numberOfFiles));
-        setLocalStorage('baseTeamName', request.teamName);
-        window.open(allFilePatternStringWithoutUsername ,'_self'); 
+      if(request.action == 'GoToFiles') {
+        window.open('/files/'+localStorage.getItem('username') ,'_self'); 
       }
+
+      if(request.action == 'StopDelete') {
+
+        localStorage.setItem('numberOfFilesToDelete', 0);
+        localStorage.setItem('lastNFilesDeleting', 0);
+        list = [];
+        localStorage.setItem('fileDeleteList', JSON.stringify(list));
+        localStorage.setItem('deletingInProgress', 0);
+        window.location.reload();
+      } 
     }
-  );
+  );  
 
   var setLocalStorage = function(key, value) {
     localStorage.setItem(key, value);
@@ -54,20 +61,14 @@
   }
 
   var init = function() {
-    console.log(localStorage.getItem('baseTeamName'));
-    if(localStorage.getItem('baseTeamName') == null){
-      BASE_URL = 'slack.com';
-    }else{
-      BASE_URL = localStorage.getItem('baseTeamName')+'.slack.com';
-    }
-
-    allFilePatternStringWithoutUsername = "https:\/\/"+BASE_URL+"\/files"
+    allFilePatternStringWithoutUsername = BASE_URL+"\/files"
     username = $("#user_menu_name").html();
-    allFilePatternString = "https:\/\/"+BASE_URL+"\/files\/"+username
+    localStorage.setItem('username', username);
+    allFilePatternString = BASE_URL+"\/files\/"+username
     allFilePattern = new RegExp(allFilePatternString);
-    lastPagePatternString = "https:\/\/"+BASE_URL+"\/files\/"+username+"\\?page=(.*)"
+    lastPagePatternString = BASE_URL+"\/files\/"+username+"\\?page=(.*)"
     lastPagePattern = new RegExp(lastPagePatternString);
-    filePatternString = "https:\/\/"+BASE_URL+"\/files\/"+username+"\/(.*)"
+    filePatternString = BASE_URL+"\/files\/"+username+"\/(.*)"
     filePattern = new RegExp(filePatternString);
 
     if(localStorage.getItem('fileDeleteList') == null) {
@@ -197,11 +198,14 @@
   }
 
   $(document).ready(function() {
+    BASE_URL = window.location.origin;
     if (window.location.href.indexOf(BASE_URL+'/files') != -1) {
       init();
       addPluginBlocks();
       addBindings();
       deleteFiles();
-    }  
+    }
   });
+
+
 })();
