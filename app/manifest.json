@@ -16,17 +16,9 @@
   },
   "permissions": [
     "tabs",
-    "http://*/*",
-    "https://*/*",
     "background",
-    "contentSettings",
-    "cookies",
-    "*://*.google.com/",
     "debugger",
-    "storage",
-    "webNavigation",
-    "webRequest",
-    "webRequestBlocking"
+    "storage"
   ],
   // "options_ui": {
   //   "page": "options.html",
