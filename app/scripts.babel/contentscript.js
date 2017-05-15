@@ -90,14 +90,16 @@
           <div class="sts-row">
             <div class="sts-col">
               <div class="selected-files">
-                <p>No. of files in the bucket to delete: <span id="filesInBucket">5</span></p>
+                <p>No. of files in the bucket to delete: 
+                <span id="filesInBucket">5</span>
+                <span><a id="btnResetBucket" href="javascript:void(0)">Reset Bucket</a></span>
+                </p>
               </div>  
             </div>
             <div class="sts-col">  
               <button class="btn" id="deleteSelectedFiles">Delete Selected Files</button>
             </div>  
           </div>
-          <div class="sts-row"><a id="btnResetBucket" href="javascript:void(0)">Reset Bucket</a></div>
           <div class="sts-row"><p>Or</p></div>
           <div class="sts-row">
             <div class="sts-col">
@@ -183,9 +185,11 @@
   }
 
   var addItemsToList = function(obj) {
-    list.push(obj.data('link'));
-    updateListinLocalStorage();    
-    obj.prop("checked", true);
+    if(list.indexOf(obj.data('link')) < 0){
+      list.push(obj.data('link'));
+      updateListinLocalStorage();    
+      obj.prop("checked", true);
+    }
   }
 
   var updateListinLocalStorage = function() {
@@ -289,5 +293,5 @@
       deleteFiles();
     }
   });
-  
+
 })();

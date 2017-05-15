@@ -1,0 +1,59 @@
+h1 {
+    font-size: 18px;
+    font-weight: 500;
+    text-align: center;
+    color: #2d9ee0;
+}
+
+.sts-tagline {
+  font-style: italic;
+  color: darkgray;
+}
+
+.main-container{
+  width: 200px;
+}
+
+.sts-popup-row {
+
+}
+
+.sts-popup-col {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.btn{
+  background: #2ab27b;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  font-family: Slack-Lato,appleLogo,sans-serif;
+  line-height: 1.2rem;
+  font-weight: 900;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  cursor: pointer;
+  text-shadow: 0 1px 1px rgba(0,0,0,.1);
+  border: none;
+  border-radius: .25rem;
+  box-shadow: none;
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+  text-align: center;
+  white-space: nowrap;
+  margin: 0;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-green {
+  background: #2ab27b;
+}
+
+.btn-red {
+  background: rgb(235, 77, 92);
+}

@@ -4,8 +4,8 @@
   "manifest_version": 2,
   "description": "__MSG_appDescription__",
   "icons": {
-    "16": "images/icon-16.png",
-    "128": "images/icon-128.png"
+    "16": "images/sts-38.png",
+    "128": "images/sts-38.png"
   },
   "default_locale": "en",
   "background": {
@@ -28,10 +28,10 @@
     "webRequest",
     "webRequestBlocking"
   ],
-  "options_ui": {
-    "page": "options.html",
-    "chrome_style": true
-  },
+  // "options_ui": {
+  //   "page": "options.html",
+  //   "chrome_style": true
+  // },
   "content_scripts": [
     {
       "matches": [
@@ -55,8 +55,8 @@
     "default_title": "sack the slack",
     "default_popup": "popup.html",
     "icons": {
-      "16": "images/icon-16.png",
-      "128": "images/icon-128.png"
+      "16": "images/sts-38.png",
+      "128": "images/sts-38.png"
     }
   }
   

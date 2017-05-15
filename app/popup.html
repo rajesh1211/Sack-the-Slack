@@ -2,14 +2,25 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link href="styles/popup.css" rel="stylesheet">
   </head>
   <body>
-    <h1>Sack the slack</h1>
+    <div class="main-container">
+      <h1>Sack the Slack</h1>
+      <p class="sts-tagline">Slick plugin to delete old slack files </p>
 
-    <a href="#" id="btnGoToFiles">Go to Files </a>
-    <br/>
-    <a href="#" id="btnStopDelete">Stop Deletion </a>
+      <div class="sts-popup-row">
+        <div class="sts-popup-col">
+          <button class="btn btn-green" id="btnGoToFiles">Go to Files </button>        
+        </div>
 
+        <div class="sts-popup-col">
+          <button class="btn btn-red" id="btnStopDelete">Stop Deletion </button>
+        </div>                  
+      </div>
+      
+        
+    </div>
     <!-- build:js scripts/popup.js -->
     <script src="scripts.babel/jquery-3.2.1.min.js"></script>    
     <script src="scripts.babel/popup.js"></script>    
