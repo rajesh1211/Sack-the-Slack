@@ -10,8 +10,8 @@
   "default_locale": "en",
   "background": {
     "scripts": [
-      "scripts.babel/chromereload.js",
-      "scripts.babel/background.js"
+      "scripts/chromereload.js",
+      "scripts/background.js"
     ]
   },
   "permissions": [
@@ -27,8 +27,8 @@
         "https://*/*"
       ],
       "js": [
-        "scripts.babel/jquery-3.2.1.min.js",
-        "scripts.babel/contentscript.js"
+        "scripts/jquery-3.2.1.min.js",
+        "scripts/contentscript.js"
       ],
       "css": ["styles/content.css"],
       "run_at": "document_end",
