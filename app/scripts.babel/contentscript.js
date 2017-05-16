@@ -233,7 +233,7 @@
                   }  
                   observeElement(".file_list_item", goToItem);
                 }else{
-                  if($(".pagination li:nth-last-child(2) a").val()){
+                  if($(".pagination li:nth-last-child(2) a").html()){
                     window.open("/files/"+self.username+"?page="+$(".pagination li:nth-last-child(2) a").html() ,'_self')
                     return;
                   }else{
