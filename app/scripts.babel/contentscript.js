@@ -68,7 +68,7 @@
     allFilePattern = new RegExp(allFilePatternString);
     lastPagePatternString = BASE_URL+"\/files\/"+username+"\\?page=(.*)"
     lastPagePattern = new RegExp(lastPagePatternString);
-    filePatternString = BASE_URL+"\/files\/"+username+"\/(.*)"
+    filePatternString = BASE_URL+"\/files\/"+username+"\/(.*)[.](.*)"
     filePattern = new RegExp(filePatternString);
 
     if(localStorage.getItem('fileDeleteList') == null) {
@@ -84,7 +84,7 @@
     var html = `
       <div class='sts-action-area'>
         <div class="sts-row">
-          <p class="sts-title">Sack the Slack </p>
+          <p class="sts-title">Files deleter for Slack</p>
         </div>
         <div class="sts-action-btn-area">
           <div class="sts-row">
@@ -241,17 +241,26 @@
         if(window.location.href.match(filePattern) == null) {
           if(localStorage.getItem('lastNFilesDeleting') == 1) {
             if(parseInt(localStorage.getItem('numberOfFilesToDelete')) > 0) {
-              if(window.location.href.match(lastPagePattern) != null && 
-                window.location.href.match(lastPagePattern)[1] == $(".pagination li:nth-last-child(2) a").html()){
-                var goToItem = function(list) {
-                  console.log('go now');
-                  list.last().click();
-                }  
-                observeElement(".file_list_item", goToItem);
+
+              if($(".pagination li:nth-last-child(2) a").html() == null) {
+                $(".file_list_item").last().click();
               }else{
-                window.open("/files/"+username+"?page="+$(".pagination li:nth-last-child(2) a").html() ,'_self')
-                return;
-              }
+                if(window.location.href.match(lastPagePattern) != null && 
+                  window.location.href.match(lastPagePattern)[1] == $(".pagination li:nth-last-child(2) a").html()){
+                  var goToItem = function(list) {
+                    console.log('go now');
+                    list.last().click();
+                  }  
+                  observeElement(".file_list_item", goToItem);
+                }else{
+                  if($(".pagination li:nth-last-child(2) a").val()){
+                    window.open("/files/"+username+"?page="+$(".pagination li:nth-last-child(2) a").html() ,'_self')
+                    return;
+                  }else{
+                    deleteIndividualFile();
+                  }  
+                }
+              }  
             }  
           }else{
             if(window.location.href != list[0]) {
