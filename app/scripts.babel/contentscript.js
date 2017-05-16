@@ -1,9 +1,9 @@
 'use strict';
 
-(function () {
+(function() {
   var $ = jQuery.noConflict();
   var BASE_URL = '';
-  var username = '';
+  self.username = '';
   var allFilePatternString = '';
   var allFilePattern = '';
   var lastPagePatternString = '';
@@ -12,24 +12,6 @@
   var filePattern = '';
   var allFilePatternStringWithoutUsername = '';
   var list = [];
-
-  chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-      if(request.action == 'GoToFiles') {
-        window.open('/files/'+localStorage.getItem('username') ,'_self'); 
-      }
-
-      if(request.action == 'StopDelete') {
-
-        localStorage.setItem('numberOfFilesToDelete', 0);
-        localStorage.setItem('lastNFilesDeleting', 0);
-        list = [];
-        localStorage.setItem('fileDeleteList', JSON.stringify(list));
-        localStorage.setItem('deletingInProgress', 0);
-        window.location.reload();
-      } 
-    }
-  );  
 
   var setLocalStorage = function(key, value) {
     localStorage.setItem(key, value);
@@ -62,13 +44,11 @@
 
   var init = function() {
     allFilePatternStringWithoutUsername = BASE_URL+"\/files"
-    username = $("#user_menu_name").html();
-    localStorage.setItem('username', username);
-    allFilePatternString = BASE_URL+"\/files\/"+username
+    allFilePatternString = BASE_URL+"\/files\/"+self.username
     allFilePattern = new RegExp(allFilePatternString);
-    lastPagePatternString = BASE_URL+"\/files\/"+username+"\\?page=(.*)"
+    lastPagePatternString = BASE_URL+"\/files\/"+self.username+"\\?page=(.*)"
     lastPagePattern = new RegExp(lastPagePatternString);
-    filePatternString = BASE_URL+"\/files\/"+username+"\/(.*)[.](.*)"
+    filePatternString = BASE_URL+"\/files\/"+self.username+"\/(.*)[.](.*)"
     filePattern = new RegExp(filePatternString);
 
     if(localStorage.getItem('fileDeleteList') == null) {
@@ -254,7 +234,7 @@
                   observeElement(".file_list_item", goToItem);
                 }else{
                   if($(".pagination li:nth-last-child(2) a").val()){
-                    window.open("/files/"+username+"?page="+$(".pagination li:nth-last-child(2) a").html() ,'_self')
+                    window.open("/files/"+self.username+"?page="+$(".pagination li:nth-last-child(2) a").html() ,'_self')
                     return;
                   }else{
                     deleteIndividualFile();
@@ -293,14 +273,45 @@
     });
   }
 
+  var setupMessageListener = function() {
+    chrome.runtime.onMessage.addListener(
+      function(request, sender, sendResponse) {
+        if(request.action == 'GoToFiles') {
+          window.open('/files/'+ self.username,'_self'); 
+        }
+
+        if(request.action == 'StopDelete') {
+
+          localStorage.setItem('numberOfFilesToDelete', 0);
+          localStorage.setItem('lastNFilesDeleting', 0);
+          list = [];
+          localStorage.setItem('fileDeleteList', JSON.stringify(list));
+          localStorage.setItem('deletingInProgress', 0);
+          window.location.reload();
+        } 
+      }
+    );  
+  }
+
   $(document).ready(function() {
     BASE_URL = window.location.origin;
-    if (window.location.href.indexOf(BASE_URL+'/files/'+localStorage.getItem('username')) != -1) {
-      init();
-      addPluginBlocks();
-      addBindings();
-      deleteFiles();
+    if (window.location.href.indexOf(BASE_URL+'/files') != -1) {
+      self.username = $("#user_menu_name").html();
+      if (window.location.href.indexOf(BASE_URL+'/files/'+self.username) != -1) {
+        localStorage.setItem('username', self.username);
+        init();
+        addPluginBlocks();
+        addBindings();
+        deleteFiles();
+      }  
+    }else{
+      observeElement("#im-list li", function() {
+        var username = $("#im-list li:nth-child(2) a").prop("href").split("/")
+        username = username[username.length -1]
+        self.username = username.substring(1, username.length);    
+      })
     }
+    setupMessageListener();
   });
 
 })();
